@@ -15,6 +15,7 @@ namespace MyStore.Data
 
     public interface ICustomerRepository
     {
+        Customer Add(Customer newCustomer);
         IEnumerable<Customer> GetAll();
         Customer GetById(int id);
     }
@@ -35,6 +36,13 @@ namespace MyStore.Data
         public Customer GetById(int id)
         {
             return context.Customers.Find(id);
+        }
+        
+        public Customer Add(Customer newCustomer)
+        {
+            var addedCustomer = context.Add(newCustomer);
+            context.SaveChanges();
+            return addedCustomer.Entity;
         }
     }
 }

@@ -55,8 +55,8 @@ namespace MyStore
             services.AddAutoMapper(typeof(ProductProfile));
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductService, ProductService>();
-            
 
+            services.AddAutoMapper(typeof(CustomerProfile));
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<ICustormerService, CustomerService>();
 

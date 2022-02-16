@@ -31,7 +31,7 @@ namespace MyStore.Controllers
 
         // GET api/<ProductsController>/5
         [HttpGet("{id}")]
-        public ProductModel Get(int id)
+        public ProductModel GetById(int id)
         {
             var productById = productService.GetById(id);
             return productById;

@@ -1,5 +1,7 @@
-﻿using MyStore.Data;
+﻿using AutoMapper;
+using MyStore.Data;
 using MyStore.Domain.Entities;
+using MyStore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,28 +17,41 @@ namespace MyStore.Services
 
     public interface ICustormerService
     {
-        IEnumerable<Customer> GetAll();
-        Customer GetById(int id);
+        CustomerModel AddCustomer(CustomerModel newCustomer);
+        IEnumerable<CustomerModel> GetAll();
+        CustomerModel GetById(int id);
 
 
     }
     public class CustomerService : ICustormerService
     {
         private readonly ICustomerRepository customerRepository;
+        private readonly IMapper mapper;
 
-        public CustomerService(ICustomerRepository customerRepository)
+        public CustomerService(ICustomerRepository customerRepository, IMapper mapper)
         {
             this.customerRepository = customerRepository;
+            this.mapper = mapper;
         }
 
-        public IEnumerable<Customer> GetAll()
+        public IEnumerable<CustomerModel> GetAll()
         {
-            return customerRepository.GetAll();
+            var allCustomers = customerRepository.GetAll().ToList();
+            return mapper.Map<IEnumerable<CustomerModel>>(allCustomers);
         }
 
-        public Customer GetById(int id)
+        public CustomerModel GetById(int id)
         {
-            return customerRepository.GetById(id);
+            var findCustomer = customerRepository.GetById(id);
+            return mapper.Map<CustomerModel>(findCustomer);
+        }
+
+        public CustomerModel AddCustomer(CustomerModel newCustomer)
+        {
+            Customer customerToAdd = mapper.Map<Customer>(newCustomer);
+            var addedCustomer = customerRepository.Add(customerToAdd);
+
+            return mapper.Map<CustomerModel>(addedCustomer);
         }
     }
 }

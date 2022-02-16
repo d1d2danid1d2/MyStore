@@ -52,8 +52,8 @@ namespace MyStore.Services
             // Assuming is valid  -> we transform it in Product(Domain object)
             Product productToAdd = mapper.Map<Product>(newProduct);
             var addedProduct = productRepository.Add(productToAdd);
-            newProduct = mapper.Map<ProductModel>(addedProduct);
-            return newProduct;
+
+            return mapper.Map<ProductModel>(addedProduct);
         }
 
     }
