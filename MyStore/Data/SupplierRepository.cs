@@ -8,6 +8,7 @@ namespace MyStore.Data
 {
     public interface ISupplierRepository
     {
+        Supplier Add(Supplier newSupplier);
         IEnumerable<Supplier> GetAll();
         Supplier GetById(int id);
     }
@@ -28,6 +29,13 @@ namespace MyStore.Data
         public Supplier GetById(int id)
         {
             return context.Suppliers.Find(id);
+        }
+
+        public Supplier Add(Supplier newSupplier)
+        {
+            var addedSupplier = context.Add(newSupplier);
+            context.SaveChanges();
+            return addedSupplier.Entity;
         }
     }
 }

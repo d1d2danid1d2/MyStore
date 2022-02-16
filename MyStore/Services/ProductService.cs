@@ -32,10 +32,7 @@ namespace MyStore.Services
             var allProduct = productRepository.GetAll().ToList();
 
             //transform domain objects from List<Product> -> List<ProductModel>
-            var productModels = mapper.Map<IEnumerable<ProductModel>>(allProduct);
-
-
-            return productModels;
+            return mapper.Map<IEnumerable<ProductModel>>(allProduct);
         }
 
         public ProductModel GetById(int id)

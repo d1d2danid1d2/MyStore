@@ -60,6 +60,7 @@ namespace MyStore
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<ICustormerService, CustomerService>();
 
+            services.AddScoped(typeof(SupplierProfile));
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<ISupplierService, SupplierService>();
 

@@ -33,8 +33,8 @@ namespace MyStore.Controllers
         [HttpGet("{id}")]
         public ProductModel GetById(int id)
         {
-            var productById = productService.GetById(id);
-            return productById;
+             return productService.GetById(id);
+            
         }
 
         // POST api/<ProductsController>

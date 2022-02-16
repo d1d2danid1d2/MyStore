@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.Domain.Entities;
+using MyStore.Models;
 using MyStore.Services;
 using System;
 using System.Collections.Generic;
@@ -23,22 +24,29 @@ namespace MyStore.Controllers
 
         // GET: api/<SupplierController>
         [HttpGet]
-        public IEnumerable<Supplier> Get()
+        public IEnumerable<SupplierModel> Get()
         {
             return supplier.GetAllSuppliers();
         }
 
         // GET api/<SupplierController>/5
         [HttpGet("{id}")]
-        public Supplier Get(int id)
+        public SupplierModel Get(int id)
         {
             return supplier.GetById(id);
         }
 
         // POST api/<SupplierController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] SupplierModel newSupplier)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var addedSupplier = supplier.AddSupplier(newSupplier);
+
+            return CreatedAtAction("Get", addedSupplier, new { id = addedSupplier.Supplierid });
         }
 
         // PUT api/<SupplierController>/5
