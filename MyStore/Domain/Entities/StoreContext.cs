@@ -291,7 +291,7 @@ namespace MyStore.Domain.Entities
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.HasKey(e => new { e.Orderid, e.Productid });
-
+                
                 entity.HasIndex(e => e.Orderid, "idx_nc_orderid");
 
                 entity.HasIndex(e => e.Productid, "idx_nc_productid");

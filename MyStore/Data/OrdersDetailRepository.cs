@@ -10,10 +10,12 @@ namespace MyStore.Data
     public interface IOrdersDetailRepository
     {
         IEnumerable<OrderDetail> GetAll();
-        OrderDetail GetById(int id);
-        IQueryable<OrderDetail> GetInfoById(int id);
+        IEnumerable<OrderDetail> GetById(int id);
+        OrderDetail OrderDelete(int id);
+        IQueryable<OrderDetail> GetInfoById(int id, int prodId);
         OrderDetail Add(OrderDetail orderDetailToAdd);
         bool Exists(int id);
+        bool ProdExists(int prodId);
         void Update(OrderDetail orderDetailToUpdate);
         bool Delete(OrderDetail orderDetailToDelete);
     }
@@ -29,13 +31,17 @@ namespace MyStore.Data
         {
             return context.OrderDetails.ToList();
         }
-        public OrderDetail GetById(int id)
+        public IEnumerable<OrderDetail> GetById(int id)
         {
-            return context.OrderDetails.Find(id);
+            return context.OrderDetails.Where(x => x.Orderid == id).ToList();
         }
-        public IQueryable<OrderDetail> GetInfoById(int id)
+        public OrderDetail OrderDelete(int id)
         {
-            return context.OrderDetails.Include(x => x.Productid).Select(x => x).Where(x => x.Productid == id);
+            return context.OrderDetails.FirstOrDefault(x=>x.Orderid == id);
+        }
+        public IQueryable<OrderDetail> GetInfoById(int id, int prodId)
+        {
+            return context.OrderDetails.Include(x => x.Product).Select(x => x).Where(x => x.Productid == prodId);
         }
         public OrderDetail Add(OrderDetail orderDetailToAdd)
         {
@@ -46,7 +52,14 @@ namespace MyStore.Data
         public bool Exists(int id)
         {
             var exists = context.OrderDetails.Count(x => x.Orderid == id);
-            return exists == 1;
+            
+            return exists >= 1;
+        }
+        public bool ProdExists(int prodId)
+        {
+            var exists = context.OrderDetails.Count(x => x.Productid == prodId);
+
+            return exists >= 1;
         }
         public void Update(OrderDetail orderDetailToUpdate)
         {
@@ -59,9 +72,5 @@ namespace MyStore.Data
             context.SaveChanges();
             return deletedOrder != null;
         }
-
-
-
-
     }
 }

@@ -10,10 +10,11 @@ namespace MyStore.Services
     public interface IOrderDetailService
     {
         IEnumerable<OrderDetail> GetAll();
-        OrderDetail GetById(int id);
-        IEnumerable<OrderDetail> GetInfoById(int id);
+        IEnumerable<OrderDetail> GetById(int id);
+        IEnumerable<OrderDetail> GetInfoById(int id, int prodId);
         OrderDetail Add(OrderDetail orderDetailToAdd);
         bool Exists(int id);
+        bool ProdExists(int prodId);
         void Update(OrderDetail orderDetailToUpdate);
         bool Delete(int id);
     }
@@ -29,13 +30,13 @@ namespace MyStore.Services
         {
             return repository.GetAll().ToList();
         }
-        public OrderDetail GetById(int id)
+        public IEnumerable<OrderDetail> GetById(int id)
         {
             return repository.GetById(id);
         }
-        public IEnumerable<OrderDetail> GetInfoById(int id)
+        public IEnumerable<OrderDetail> GetInfoById(int id, int prodId)
         {
-            return repository.GetInfoById(id).ToList();
+            return repository.GetInfoById(id, prodId).ToList();
         }
         public OrderDetail Add(OrderDetail orderDetailToAdd)
         {
@@ -45,13 +46,17 @@ namespace MyStore.Services
         {
             return repository.Exists(id);
         }
+        public bool ProdExists(int prodId)
+        {
+            return repository.ProdExists(prodId);
+        }
         public void Update(OrderDetail orderDetailToUpdate)
         {
             repository.Update(orderDetailToUpdate);
         }
         public bool Delete(int id)
         {
-            var deletedItem = repository.GetById(id);
+            var deletedItem = repository.OrderDelete(id);
             repository.Delete(deletedItem);
             return deletedItem != null;
         }

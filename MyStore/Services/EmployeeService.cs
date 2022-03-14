@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace MyStore.Services
 {
-    public interface IEmploueeService
+    public interface IEmployeeService
     {
         IEnumerable<EmployeeModel> GetAll();
         EmployeeModel GetById(int id);
-        IEnumerable<EmployeeModel> GetInfoById(int id);
+        IEnumerable<Employee> GetInfoById(int id);
         EmployeeModel Add(EmployeeModel employeeToAdd);
         bool Exists(int id);
         void Update(EmployeeModel employeeToUpdate);
         bool Delete(int id);
     }
-    public class EmployeeService : IEmploueeService
+    public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeesRepository repository;
         private readonly IMapper mapper;
@@ -39,10 +39,9 @@ namespace MyStore.Services
             var employee = repository.GetById(id);
             return mapper.Map<EmployeeModel>(employee);
         }
-        public IEnumerable<EmployeeModel> GetInfoById(int id)
+        public IEnumerable<Employee> GetInfoById(int id)
         {
-            var employee = repository.GetInfoById(id);
-            return mapper.Map<IEnumerable<EmployeeModel>>(employee);
+            return repository.GetInfoById(id);
         }
         public EmployeeModel Add(EmployeeModel employeeToAdd)
         {
