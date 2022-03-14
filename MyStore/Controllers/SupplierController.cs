@@ -15,25 +15,39 @@ namespace MyStore.Controllers
     [ApiController]
     public class SupplierController : ControllerBase
     {
-        private readonly ISupplierService supplier;
+        private readonly ISupplierService supplierService;
 
         public SupplierController(ISupplierService supplier)
         {
-            this.supplier = supplier;
+            this.supplierService = supplier;
         }
 
         // GET: api/<SupplierController>
         [HttpGet]
-        public IEnumerable<SupplierModel> Get()
+        public ActionResult<IEnumerable<SupplierModel>> GetAll()
         {
-            return supplier.GetAllSuppliers();
+            var result = supplierService.GetAll();
+            return Ok(result);
         }
-
         // GET api/<SupplierController>/5
         [HttpGet("{id}")]
-        public SupplierModel Get(int id)
+        public ActionResult<SupplierModel> GetById(int id)
         {
-            return supplier.GetById(id);
+            if (!supplierService.Exists(id))
+            {
+                return NotFound();
+            }
+            return Ok(supplierService.GetById(id));
+        }
+
+        [HttpGet("info/{id}")]
+        public ActionResult<IEnumerable<Supplier>> GetInfoById(int id)
+        {
+            if (!supplierService.Exists(id))
+            {
+                return NotFound();
+            }
+            return Ok(supplierService.GetInfoById(id));
         }
 
         // POST api/<SupplierController>
@@ -44,21 +58,38 @@ namespace MyStore.Controllers
             {
                 return BadRequest();
             }
-            var addedSupplier = supplier.AddSupplier(newSupplier);
+            var addedSupplier = supplierService.Add(newSupplier);
 
-            return CreatedAtAction("Get", addedSupplier, new { id = addedSupplier.Supplierid });
+            return CreatedAtAction("GetAll", addedSupplier, new { id = addedSupplier.Supplierid });
         }
 
         // PUT api/<SupplierController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] SupplierModel supplierToUpdate)
         {
+            if (id != supplierToUpdate.Supplierid)
+            {
+                return BadRequest();
+            }
+            if (!supplierService.Exists(id))
+            {
+                return NotFound();
+            }
+            supplierService.Update(supplierToUpdate);
+            return NoContent();
         }
 
         // DELETE api/<SupplierController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            if (!supplierService.Exists(id))
+            {
+                return NotFound();
+            }
+            supplierService.Delete(id);
+            return NoContent();
+
         }
     }
 }

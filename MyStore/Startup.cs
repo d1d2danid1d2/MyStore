@@ -14,7 +14,9 @@ using MyStore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static MyStore.Services.IOrderService;
 
 namespace MyStore
 {
@@ -30,6 +32,9 @@ namespace MyStore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers().AddNewtonsoftJson(options =>
+  options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 
             services.AddControllers();
         
@@ -58,11 +63,17 @@ namespace MyStore
 
             services.AddAutoMapper(typeof(CustomerProfile));
             services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<ICustormerService, CustomerService>();
+            services.AddScoped<ICustomerService, CustomerService>();
 
             services.AddScoped(typeof(SupplierProfile));
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<ISupplierService, SupplierService>();
+
+            services.AddScoped(typeof(OrderProfile));
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderService, OrderService>();
+
+
 
 
 

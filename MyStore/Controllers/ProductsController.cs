@@ -5,6 +5,7 @@ using MyStore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,28 +17,42 @@ namespace MyStore.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService productService;
-
         public ProductsController(IProductService productService)
         {
             this.productService = productService;
         }
-        // GET: api/<ProductsController>
+
+        // GET: api/products
         [HttpGet]
-        public IEnumerable<ProductModel> Get()
+        public ActionResult<IEnumerable<ProductModel>> GetAll()
         {
-            var productList = productService.GetAllProducts();
-            return productList;
+            var productList = productService.GetAll();
+            return Ok(productList);
         }
 
-        // GET api/<ProductsController>/5
+        // GET: api/products/id
         [HttpGet("{id}")]
-        public ProductModel GetById(int id)
+        public ActionResult<ProductModel> GetById(int id)
         {
-             return productService.GetById(id);
-            
+            if(!productService.Exists(id))
+            {
+                return NotFound();
+            }    
+            return Ok(productService.GetById(id));
         }
 
-        // POST api/<ProductsController>
+        // GET: api/products/info/id
+        [HttpGet("info/{id}")]
+        public ActionResult<IEnumerable<Product>> GetInfoById(int id)
+        {
+            if (!productService.Exists(id))
+            {
+                return NotFound();
+            }
+            return Ok(productService.GetInfoById(id));
+        }
+
+        // POST: api/products
         [HttpPost]
         public IActionResult Post([FromBody] ProductModel newProduct)
         {
@@ -46,24 +61,40 @@ namespace MyStore.Controllers
             {
                 return BadRequest();
             }
-
-            var addedProduct = productService.AddProduct(newProduct);
-
-            return CreatedAtAction("Get", addedProduct, new { id = addedProduct.Productid });
-
-
+            var addedProduct = productService.Add(newProduct);
+            return CreatedAtAction("GetAll", addedProduct, new { id = addedProduct.Productid });
         }
 
-        // PUT api/<ProductsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT: api/products/id
+        [HttpPut("{id}")]       
+        public IActionResult Put(int id, [FromBody] ProductModel productToUpdate)
         {
+            //exist by id
+            if(id != productToUpdate.Productid)
+            {
+                return BadRequest();
+            }
+            if (!productService.Exists(id))
+            {
+                return NotFound();
+            }
+            productService.Update(productToUpdate);
+            return NoContent();            
         }
 
-        // DELETE api/<ProductsController>/5
+        // DELETE: api/products/id
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            if (!productService.Exists(id))
+            {
+                return NotFound();
+            }
+            productService.Delete(id);
+            return NoContent();
+            //search the object with the id
+            //delete the object
+            //return no content
         }
     }
 }

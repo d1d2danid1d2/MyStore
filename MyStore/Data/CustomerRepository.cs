@@ -1,4 +1,5 @@
-﻿using MyStore.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MyStore.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +16,18 @@ namespace MyStore.Data
 
     public interface ICustomerRepository
     {
-        Customer Add(Customer newCustomer);
         IEnumerable<Customer> GetAll();
         Customer GetById(int id);
+        IQueryable<Customer> GetInfoById(int id);
+        Customer Add(Customer customerToAdd);
+        bool Exists(int id);
+        bool Delete(Customer customerToDelete);         
+        void Update(Customer customerToUpdate);
     }
+
     public class CustomerRepository : ICustomerRepository
     {
         private readonly StoreContext context;
-
         public CustomerRepository(StoreContext context)
         {
             this.context = context;
@@ -32,17 +37,35 @@ namespace MyStore.Data
         {
             return context.Customers.ToList();
         }
-
         public Customer GetById(int id)
         {
             return context.Customers.Find(id);
         }
-        
-        public Customer Add(Customer newCustomer)
+        public IQueryable<Customer> GetInfoById(int id)
         {
-            var addedCustomer = context.Add(newCustomer);
+            return context.Customers.Include(x => x.Orders).Select(x => x).Where(x => x.Custid == id);                      
+        }   
+        public Customer Add(Customer customerToAdd)
+        {
+            var addedCustomer = context.Add(customerToAdd);
             context.SaveChanges();
             return addedCustomer.Entity;
+        }
+        public bool Exists(int id)
+        {
+            var exist = context.Customers.Count(x => x.Custid == id);
+            return exist == 1;
+        }
+        public void Update(Customer customerToUpdate)
+        {
+            context.Customers.Update(customerToUpdate);
+            context.SaveChanges();
+        }
+        public bool Delete(Customer customerToDelete)
+        {
+            var deleteCustomer = context.Customers.Remove(customerToDelete);
+            context.SaveChanges();
+            return deleteCustomer != null;
         }
     }
 }

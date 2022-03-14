@@ -26,9 +26,9 @@ namespace MyStore.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly ICustormerService customerService;
+        private readonly ICustomerService customerService;
 
-        public CustomerController(ICustormerService customersService)
+        public CustomerController(ICustomerService customersService)
         {
             this.customerService = customersService;
         }
@@ -36,16 +36,31 @@ namespace MyStore.Controllers
 
         // GET: api/<CustomersController>
         [HttpGet]
-        public IEnumerable<CustomerModel> Get()
+        public ActionResult<IEnumerable<CustomerModel>> GetAll()
         {
-            return customerService.GetAll();
+            var returns = customerService.GetAll();
+            return Ok(returns);
         }
 
         // GET api/<CustomersController>/5
         [HttpGet("{id}")]
-        public CustomerModel GetById(int id)
+        public ActionResult<CustomerModel> GetById(int id)
         {
-            return customerService.GetById(id);
+            if (!customerService.Exists(id))
+            {
+                return NotFound();
+            }
+            return Ok(customerService.GetById(id));
+        }
+
+        [HttpGet("info/{id}")]
+        public ActionResult<IEnumerable<Customer>> GetInfoById(int id)
+        {
+            if (!customerService.Exists(id))
+            {
+                return NotFound();
+            }
+            return Ok(customerService.GetInfoById(id));
         }
 
         // POST api/<CustomersController>
@@ -56,22 +71,36 @@ namespace MyStore.Controllers
             {
                 return BadRequest();
             }
-
             var addedCustomer = customerService.AddCustomer(newCustomer);
-
-            return CreatedAtAction("Get", addedCustomer, new { id = addedCustomer.Custid });
+            return CreatedAtAction("GetAll", addedCustomer, new { id = addedCustomer.Custid });
         }
 
         // PUT api/<CustomersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] CustomerModel customerToUpdate)
         {
+            if (id != customerToUpdate.Custid)
+            {
+                return BadRequest();
+            }
+            if (!customerService.Exists(id))
+            {
+                return NotFound();
+            }
+            customerService.Update(customerToUpdate);
+            return NoContent();
         }
 
         // DELETE api/<CustomersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            if (!customerService.Exists(id))
+            {
+                return NotFound();
+            }
+            customerService.Delete(id);
+            return NoContent();
         }
     }
 }

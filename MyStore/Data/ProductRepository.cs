@@ -1,4 +1,5 @@
-﻿using MyStore.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MyStore.Domain.Entities;
 using MyStore.Models;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,14 @@ namespace MyStore.Data
         //Data access code
         //CRUD
         IEnumerable<Product> GetAll();
-        Product FindProductById(int id);
-        Product Add(Product newProduct);
+        Product GetById(int id);
+        IQueryable<Product> GetInfoById(int id);     
+        Product Add(Product productToAdd);
+        bool Exists(int id);
+        void Update(Product productToUpdate);       
+        bool Delete(Product productToDelete);
     }
+
     public class ProductRepository : IProductRepository
     {
         private readonly StoreContext context;
@@ -22,26 +28,42 @@ namespace MyStore.Data
         {
             this.context = context;
         }
+
         public IEnumerable<Product> GetAll()
         {
             return context.Products.ToList();
         }
-
-        public IEnumerable<Product> FindByCategory(int categoryId)
-        {
-            return context.Products.Where(x => x.Categoryid == categoryId).ToList();
-        }
-
-        public Product FindProductById(int id)
+        public Product GetById(int id)
         {
             return context.Products.Find(id);
         }
-        public Product Add(Product newProduct)
+        public IQueryable<Product> GetInfoById(int id)
         {
-          var addedProduct = context.Add(newProduct);
+            var query = context.Products.Include(x => x.Supplier).Include(x => x.Category).Select(x => x);
+            query = query.Where(x => x.Productid == id);
+            return query;
+        }
+        public Product Add(Product productToAdd)
+        {
+            var addedProduct = context.Add(productToAdd);
             context.SaveChanges();
             return addedProduct.Entity;        
         }
-
+        public bool Exists(int id)
+        {
+            var exist = context.Products.Count(x => x.Productid == id);
+            return exist == 1;
+        }
+        public void Update(Product productToUpdate)
+        {
+            context.Products.Update(productToUpdate);
+            context.SaveChanges();
+        }
+        public bool Delete(Product productToDelete)
+        {
+            var deletedItem = context.Products.Remove(productToDelete);
+            context.SaveChanges();
+            return deletedItem != null;
+        }
     }
 }

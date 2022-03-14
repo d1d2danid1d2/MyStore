@@ -15,15 +15,17 @@ namespace MyStore.Services
     //The interface asks for the those two methods and the class must implement them 
     // --> CustomerController
 
-    public interface ICustormerService
+    public interface ICustomerService
     {
-        CustomerModel AddCustomer(CustomerModel newCustomer);
         IEnumerable<CustomerModel> GetAll();
         CustomerModel GetById(int id);
-
-
+        public IEnumerable<Customer> GetInfoById(int id);
+        CustomerModel AddCustomer(CustomerModel newCustomer);
+        bool Exists(int id);
+        void Update(CustomerModel model);
+        bool Delete(int id);       
     }
-    public class CustomerService : ICustormerService
+    public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository customerRepository;
         private readonly IMapper mapper;
@@ -40,6 +42,12 @@ namespace MyStore.Services
             return mapper.Map<IEnumerable<CustomerModel>>(allCustomers);
         }
 
+        public IEnumerable<Customer> GetInfoById(int id)
+        {
+            var allCustomers = customerRepository.GetInfoById(id).ToList();
+            return allCustomers;
+        }
+
         public CustomerModel GetById(int id)
         {
             var findCustomer = customerRepository.GetById(id);
@@ -53,5 +61,22 @@ namespace MyStore.Services
 
             return mapper.Map<CustomerModel>(addedCustomer);
         }
+
+        public bool Exists(int id)
+        {
+            return customerRepository.Exists(id);
+        }
+        public void Update(CustomerModel model)
+        {
+            Customer customerToUpdate = mapper.Map<Customer>(model);
+            customerRepository.Update(customerToUpdate);
+        }
+        public bool Delete(int id)
+        {
+            var customerToDelete = customerRepository.GetById(id);
+            customerRepository.Delete(customerToDelete);
+            return customerToDelete != null;
+        }
+
     }
 }
