@@ -77,6 +77,5 @@ namespace MyStore.Services
             customerRepository.Delete(customerToDelete);
             return customerToDelete != null;
         }
-
     }
 }

@@ -68,7 +68,7 @@ namespace MyStore.Services
         {
             var itemToDelete = productRepository.GetById(id);
             productRepository.Delete(itemToDelete);
-            return productRepository != null;
+            return itemToDelete != null;
         }
     }
 }

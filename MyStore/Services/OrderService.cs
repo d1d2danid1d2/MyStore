@@ -69,7 +69,7 @@ namespace MyStore.Services
         {
             var orderId = repository.GetById(id);
             repository.Delete(orderId);
-            return repository != null;
+            return orderId != null;
         }
     }
 }
