@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.EntityFrameworkCore;
+using Moq;
 using MyStore.Data;
 using MyStore.Domain.Entities;
 using MyStore.Tests.Mocks.Consts;
@@ -34,13 +35,30 @@ namespace MyStore.Tests.Mocks.Repository
             Assert.IsType<List<Supplier>>(result);
         }
 
+        //[Fact]
+
+        //public void Should_GetById()
+        //{
+        //    //arrange
+        //    mockrepo.Setup(x => x.GetById(It.IsAny<int>())).Returns(ReturnsMultiple()[It.IsAny<int>()]);
+
+        //    //act
+        //    int id = ReturnsMultiple().FindIndex(x => x.Supplierid == 1);
+        //    var result = mockrepo.Object.GetById(id);
+        //    var expected = ReturnsMultiple().Find(x => x.Supplierid == 2);
+
+        //    //assert
+        //    Assert.Equal(expected.Phone, result.Phone);
+        //}
+
+
         public List<Supplier> ReturnsMultiple()
         {
             return new List<Supplier>()
             {
                 new Supplier
-                {
-                    Supplierid = SupplierConsts.Supplierid,
+                {                    
+                    Supplierid = 1,
                     Companyname = SupplierConsts.Companyname,
                     Contactname = SupplierConsts.Contactname,
                     Contacttitle = SupplierConsts.Contacttitle,
@@ -51,11 +69,10 @@ namespace MyStore.Tests.Mocks.Repository
                     Address = SupplierConsts.Address,
                     Phone = SupplierConsts.Phone,
                     Fax = SupplierConsts.Fax
-                },
-            
+                },            
                 new Supplier
                 {
-                    Supplierid = SupplierConsts.Supplierid,
+                    Supplierid = 2,
                     Companyname = SupplierConsts.Companyname,
                     Contactname = SupplierConsts.Contactname,
                     Contacttitle = SupplierConsts.Contacttitle,
@@ -67,13 +84,9 @@ namespace MyStore.Tests.Mocks.Repository
                     Phone = SupplierConsts.Phone,
                     Fax = SupplierConsts.Fax
                 }
-
-
             };
 
         }
-
-
-
+        
     }
 }
