@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyStore.Domain.Entities;
+using MyStore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace MyStore.Data
 {
     public interface IOrderRepository
     {
-        IEnumerable<Order> GetAll();
+        IQueryable<Order> GetAll(string? city, Shippers shipper, List<string>? country);
         Order GetById(int id);
         IQueryable<Order> GetInfoById(int id);
         Order Add(Order orderToAdd);
@@ -26,18 +27,32 @@ namespace MyStore.Data
             this.context = context;
         }
 
-        public IEnumerable<Order> GetAll()
+        public IQueryable<Order> GetAll(string? city, Shippers shipper, List<string>? country)
         {
-            return context.Orders.ToList();
-        }       
+            var query = this.context.Orders.Include(x => x.OrderDetails).Select(x => x);
+            if (!string.IsNullOrEmpty(city))
+            {
+                query = query.Where(x => x.Shipcity == city);
+            }
+            query = query.Where(x => x.Shipperid == (int)shipper);
+            if (country.Any())
+            {
+                query = query.Where(x => country.Contains(x.Shipcountry));
+            }
+            return query;
+
+            //var pageNumber= 3;
+            //var numbersPerPage = 20;
+            //query = query.Ship(pageNumber-1 * 20).Take(numbersPerPage);
+        }
         public Order GetById(int id)
         {
             return context.Orders.Find(id);
         }
         public IQueryable<Order> GetInfoById(int id)
         {
-            var query = context.Orders.Include(x => x.Emp).Select(x => x);
-            if(GetById(id) != null)
+            var query = context.Orders.Include(x => x.OrderDetails).Select(x => x);
+            if (GetById(id) != null)
             {
                 query = query.Where(x => x.Orderid == id);
             }
@@ -45,9 +60,9 @@ namespace MyStore.Data
         }
         public Order Add(Order orderToAdd)
         {
-            orderToAdd.Orderdate = DateTime.Now;
-            orderToAdd.Requireddate = DateTime.Now.AddDays(15);
-            var addedOrder = context.Add(orderToAdd);
+            //orderToAdd.Orderdate = DateTime.Now;
+            //orderToAdd.Requireddate = DateTime.Now.AddDays(15);
+            var addedOrder = context.Orders.Add(orderToAdd);
             context.SaveChanges();
             return addedOrder.Entity;
         }
@@ -67,5 +82,6 @@ namespace MyStore.Data
             context.SaveChanges();
             return deletedOrder != null;
         }
+
     }
 }

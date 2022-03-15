@@ -14,6 +14,8 @@ namespace MyStore.Infrastructure
         {
             CreateMap<Order, OrderModel>();
             CreateMap<OrderModel, Order>();
+            CreateMap<OrderDetailModel, OrderDetail>();
+            CreateMap<OrderDetail, OrderDetailModel>();
         }
     }
 }

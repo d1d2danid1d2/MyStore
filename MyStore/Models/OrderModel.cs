@@ -31,5 +31,6 @@ namespace MyStore.Models
         [Required]
         public DateTime Requireddate { get; set; }
 
+        public virtual ICollection<OrderDetailModel> OrderDetails { get; set; }
     }
 }
