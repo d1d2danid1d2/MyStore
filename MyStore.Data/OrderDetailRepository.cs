@@ -15,8 +15,8 @@ namespace MyStore.Data
         OrderDetail Add(OrderDetail orderDetailToAdd);
         bool Exists(int id);
         bool ProductExists(int id, int? prodId);
-        void Update(OrderDetail orderDetailToUpdate);
-        bool Delete(int id, int? prodId);
+        void Update(OrderDetail deleteOrder, OrderDetail updateOrder);
+        bool Delete(OrderDetail orderToDelete);
 
     }
     public class OrderDetailRepository : IOrderDetailRepository
@@ -59,27 +59,14 @@ namespace MyStore.Data
             var exists = order.Count(x => x.Productid == prodId);    
             return exists == 1;
         }
-        public void Update(OrderDetail orderDetailToUpdate)
+        public void Update(OrderDetail deleteOrder, OrderDetail updateOrder)
         {
-            //var updatedOrder = context.OrderDetails.First(x => x.Productid == orderDetailToUpdate.Productid);
-            //updatedOrder = orderDetailToUpdate;
-            context.OrderDetails.Update(orderDetailToUpdate);
-            context.SaveChanges();
+            Delete(deleteOrder);
+            Add(updateOrder);
         }
-        public bool Delete(int id, int? productId)
+        public bool Delete(OrderDetail orderToDelete)
         {
-            var deleteOrders = new OrderDetail();
-            if (productId != null)
-            {
-                deleteOrders = GetById(id).First(x => x.Productid == productId);
-                context.OrderDetails.Remove(deleteOrders);
-            }
-            else
-            {
-                deleteOrders = GetById(id).FirstOrDefault();
-                context.OrderDetails.Remove(deleteOrders);
-            }
-
+            var deleteOrders = context.OrderDetails.Remove(orderToDelete);
             context.SaveChanges();
             return deleteOrders != null;
         }

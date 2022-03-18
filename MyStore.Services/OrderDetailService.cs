@@ -51,24 +51,36 @@ namespace MyStore.Services
         }
         public void Update(OrderDetail orderDetailToUpdate, int? productId)
         {
-            if (productId == null || productId == orderDetailToUpdate.Productid)
+            if (productId == null)
             {
-                repository.Update(orderDetailToUpdate); 
+                var oldOrder = repository.GetById(orderDetailToUpdate.Orderid).First(x => x.Productid == orderDetailToUpdate.Productid);
+                repository.Update(oldOrder,orderDetailToUpdate); 
             }
-            else if (repository.ProductExists(orderDetailToUpdate.Orderid, (int)productId))
+            else if(repository.ProductExists(orderDetailToUpdate.Orderid, (int)productId))
             {
-                repository.Delete(orderDetailToUpdate.Orderid, productId);
-                Add(orderDetailToUpdate);
+                var oldOrder = repository.GetById(orderDetailToUpdate.Orderid).First(x => x.Productid == productId);
+                repository.Update(oldOrder, orderDetailToUpdate);            
             }
-            else if(!repository.ProductExists(orderDetailToUpdate.Orderid,(int)productId))
+            else if (repository.ProductExists(orderDetailToUpdate.Orderid, orderDetailToUpdate.Productid))
             {
-                repository.Delete(orderDetailToUpdate.Orderid, productId);
-                repository.Add(orderDetailToUpdate);
-            }           
+                var oldOrder = repository.GetById(orderDetailToUpdate.Orderid).First(x => x.Productid == orderDetailToUpdate.Productid);
+                repository.Update(oldOrder, orderDetailToUpdate);
+            }
         }
         public bool Delete(int id, int? productId)
         {
-            return repository.Delete(id, productId);
+            var orderToDelete = repository.GetById(id);
+            if (productId == null)
+            {
+                var deleteOrder = orderToDelete.FirstOrDefault();
+                return repository.Delete(deleteOrder);
+            }
+            else
+            {
+                var deleteOrder = orderToDelete.First(x => x.Productid == productId);
+                return repository.Delete(deleteOrder);
+            }
+            
         }
 
     }

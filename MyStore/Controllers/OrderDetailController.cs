@@ -55,6 +55,20 @@ namespace MyStore.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] OrderDetailModel orderToAdd, int? productId)
         {
+            /* 
+             finds all order details( id )
+             the model that you want to update ( order to add )
+             
+            And here the fun begin
+
+            You can update the val of an index in two ways : 1) you ignore the ?productId and the index will be automatically orderToAdd.ProductId
+                                                             2) you can put the productId of the OrderDetail that you want to change 
+
+            OrderDetailPresentation was created to create more space for the OrderDetailService 
+            The code in OrderDetailService and Repository is bad , because it's hard to read , and the logic behind it is somewhat ok
+            
+             
+             */
             if (!orderDetail.Exists(id) || !orderDetail.ProductExists(id,productId))         
             {
                 return NotFound();
@@ -70,8 +84,12 @@ namespace MyStore.Controllers
         // DELETE api/<OrderDetailController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id, int? productId)
-        {
-            if(!orderDetail.Exists(id)|| !orderDetail.ProductExists(id, productId))
+        {/* 
+            finds all order details( id )
+            the delete will remove the first entry by default
+            if you want to delete a specified item, then at the prductId type the product Id that you want to delete             
+             */
+            if (!orderDetail.Exists(id)|| !orderDetail.ProductExists(id, productId))
             {
                 return NotFound();
             }
