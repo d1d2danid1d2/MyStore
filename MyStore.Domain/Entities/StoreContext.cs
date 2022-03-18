@@ -34,13 +34,13 @@ namespace MyStore.Domain.Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Store");
+                optionsBuilder.UseSqlServer("Data Source =(localdb)\\MSSQLLocalDB;Initial Catalog=Store");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");          
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<Category>(entity =>
             {
@@ -218,7 +218,7 @@ namespace MyStore.Domain.Entities
 
                 entity.HasIndex(e => e.Shippostalcode, "idx_nc_shippostalcode");
 
-                entity.Property(e => e.Orderid).HasColumnName("orderid");
+                entity.Property(e => e.Orderid).HasColumnName("orderid");               
 
                 entity.Property(e => e.Custid).HasColumnName("custid");
 
@@ -291,7 +291,7 @@ namespace MyStore.Domain.Entities
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.HasKey(e => new { e.Orderid, e.Productid });
-                
+
                 entity.HasIndex(e => e.Orderid, "idx_nc_orderid");
 
                 entity.HasIndex(e => e.Productid, "idx_nc_productid");
@@ -315,7 +315,7 @@ namespace MyStore.Domain.Entities
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.Orderid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_OrderDetails_Orders");
 
                 entity.HasOne(d => d.Product)

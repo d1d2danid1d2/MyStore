@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MyStore.Models
@@ -12,5 +13,6 @@ namespace MyStore.Models
         public decimal Unitprice { get; set; }
         public short Qty { get; set; }
         public decimal Discount { get; set; }
+
     }
 }

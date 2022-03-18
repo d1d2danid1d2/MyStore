@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MyStore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace MyStore.Controllers
@@ -11,29 +15,42 @@ namespace MyStore.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IConfiguration config;
+        private readonly IOptions<MySettings> appSettings;
+        private readonly MySettings mySettings;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration config, IOptions<MySettings> appSettings)
         {
             _logger = logger;
+            this.config = config;
+            this.appSettings = appSettings;
+            this.mySettings = appSettings.Value;
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IActionResult> GetWeatherAsync()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            //var openWeatherUrl = config.GetSection("MySettings").GetSection("OpenWeatherMapUrl").Value;
+            //var apiKey = config.GetSection("MySettings").GetSection("ApiKey").Value;
+
+            var openWeatherUrl = config.GetValue<string>("MySettings:OpenWeatherMapUrl");
+            var apiKey = config.GetValue<string>("MySettings:ApiKey");
+
+            HttpClient client = new HttpClient();
+            //HttpResponseMessage response = await client.GetAsync($"{openWeatherUrl}{apiKey}");
+
+            HttpResponseMessage response = await client.GetAsync($"{mySettings.OpenWeatherMapUrl}{mySettings.ApiKey}");
+
+            var contentData = string.Empty;
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                contentData = response.Content.ReadAsStringAsync().Result;
+            }
+            return Ok(contentData);
         }
+
+        //
+        
     }
 }

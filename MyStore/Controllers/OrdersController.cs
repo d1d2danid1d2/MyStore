@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using MyStore.Domain.Entities;
-using MyStore.Infrastructure;
+﻿using Microsoft.AspNetCore.Mvc;
+using MyStore.DataPresentation;
 using MyStore.Models;
-using MyStore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,105 +14,56 @@ namespace MyStore.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly IOrderService orderService;
-        private readonly IMapper mapper;
+        private readonly IOrdersPresentation orders;
 
-        public OrdersController(IOrderService orderService, IMapper mapper)
+        public OrdersController(IOrdersPresentation orders)
         {
-            this.orderService = orderService;
-            this.mapper = mapper;
+            this.orders = orders;
         }
 
+        // GET: api/<OrdersController>
         [HttpGet]
-        public ActionResult<IEnumerable<OrderModel>> GetAll(string? city, Shippers shipper,[FromQuery]List<string>? country)
-        {//1 shipCity ->
-            var order = orderService.GetAll(city, shipper, country);
-            return Ok(order);
+        public ActionResult<IEnumerable<OrderModelPresentation>> Get(int? empId, int? custId, [FromQuery]List<string>? shipCity)
+        {
+            return Ok(orders.GetAll(empId,custId,shipCity));
         }
 
         // GET api/<OrdersController>/5
         [HttpGet("{id}")]
-        public ActionResult<OrderModel> GetById(int id)
+        public ActionResult<IEnumerable<OrderModelPresentation>> GetById(int id)
         {
-            if (!orderService.Exists(id))
+            if (!orders.Exists(id))
             {
                 return NotFound();
             }
-            return Ok(orderService.GetById(id));
+            return Ok(orders.GetById(id));
         }
 
-        [HttpGet("info/{id}")]
-        public ActionResult<IEnumerable<Order>> GetAllInfoById(int id)
-        {
-            if (!orderService.Exists(id))
-            {
-                return NotFound();
-            }
-            return Ok(orderService.GetAllInfoById(id));
-        }
-        
         // POST api/<OrdersController>
         [HttpPost]
-        public IActionResult Post([FromBody] OrderModel newOrder)
+        public ActionResult<OrderModelAdd> Post([FromBody] OrderModelAdd orderToAdd)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            var addOrder = orderService.AddOrder(newOrder);
-            return CreatedAtAction("GetAll", new { id = addOrder.Orderid },mapper.Map<OrderModel>(addOrder));
-            //var newTestOrder = new Order()
-            //{
-            //    Orderdate = DateTime.Now,
-            //    Shipaddress = "random adress",
-            //    Shipcity = "random city",
-            //    Shipcountry = "country",
-            //    Shippostalcode = "707",
-            //    Custid = 85,
-            //    Shipperid = 3,
-            //    Empid = 5,
-            //    Freight = 12.5M,
-            //    Shipname = "delivery",
-            //    Requireddate = DateTime.Now.AddDays(3)
-            //};
-
-            //var orderDetailList = new List<OrderDetail>();
-            //var product1 = new OrderDetail()
-            //{
-            //    Productid = 22,
-            //    Discount = 0,
-            //    Qty = 2,
-            //    Unitprice = 22
-            //};
-            //orderDetailList.Add(product1);
-            //var product2 = new OrderDetail()
-            //{
-            //    Productid = 57,
-            //    Discount = 0,
-            //    Qty = 12,
-            //    Unitprice = 7
-            //};
-            //orderDetailList.Add(product2);
-            //newTestOrder.OrderDetails = orderDetailList;
-            //var updatedOrder = orderService.AddNewOrder(newTestOrder);
-
-
-            //var updatedProduct = orderService.AddOrder(newOrder);
+            var orderAdded = orders.Add(orderToAdd);
+            return CreatedAtAction("Get", orderAdded, new { id = orderAdded.Orderid });
         }
 
         // PUT api/<OrdersController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] OrderModel orderToUpdate)
+        public IActionResult Put(int id, [FromBody] OrderModelAdd orderToUpdate)
         {
-            if (id != orderToUpdate.Orderid)
-            {
-                return BadRequest();
-            }
-            if (!orderService.Exists(id))
+            if(!orders.Exists(id))
             {
                 return NotFound();
             }
-            orderService.Update(orderToUpdate);
+            if(id != orderToUpdate.Orderid)
+            {
+                return BadRequest();
+            }
+            orders.Update(orderToUpdate);
             return NoContent();
         }
 
@@ -123,11 +71,11 @@ namespace MyStore.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (!orderService.Exists(id))
+            if (!orders.Exists(id))
             {
                 return NotFound();
             }
-            orderService.Delete(id);
+            orders.Delete(id);
             return NoContent();
         }
     }

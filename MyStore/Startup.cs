@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MyStore.Data;
+using MyStore.DataPresentation;
 using MyStore.Domain.Entities;
 using MyStore.Infrastructure;
 using MyStore.Services;
@@ -55,36 +56,19 @@ namespace MyStore
             //Then we add the repository that we want and the class that it implements
             //SideNote: If we want to change the functionality of the app, we only need to change the things that appears here
             //IProductRepository and ProductRepository for example
+            services.Configure<MySettings>(Configuration.GetSection("MySettings"));
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddAutoMapper(typeof(ProductProfile));
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IProductService, ProductService>();
 
-            services.AddAutoMapper(typeof(CustomerProfile));
-            services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<ICustomerService, CustomerService>();
-
-            services.AddScoped(typeof(SupplierProfile));
-            services.AddScoped<ISupplierRepository, SupplierRepository>();
-            services.AddScoped<ISupplierService, SupplierService>();
-
-            services.AddScoped(typeof(OrderProfile));
+            services.AddScoped(typeof(OrdersProfile));
+            services.AddScoped<IOrdersPresentation, OrdersPresentation>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderService, OrderService>();
 
-            services.AddScoped<ICategoriesRepository, CategoriesRepository>();
-            services.AddScoped<ICategoryService, CategoryService>();
-
+            
             services.AddScoped(typeof(EmployeeProfile));
             services.AddScoped<IEmployeesRepository, EmployeesRepository>();
             services.AddScoped<IEmployeeService, EmployeeService>();           
-
-            services.AddScoped<IOrdersDetailRepository, OrdersDetailRepository>();
-            services.AddScoped<IOrderDetailService, OrderDetailService>();
-
-            services.AddScoped<IShippersRepository, ShippersRepository>();
-            services.AddScoped<IShipperService, ShipperService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,7 +84,7 @@ namespace MyStore
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseMiddleware<SecurityHeaderMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
