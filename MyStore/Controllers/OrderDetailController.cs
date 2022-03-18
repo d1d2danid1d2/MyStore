@@ -86,7 +86,7 @@ namespace MyStore.Controllers
         public IActionResult Delete(int id, int? productId)
         {/* 
             finds all order details( id )
-            the delete will remove the first entry by default
+            the delete will remove the first index by default
             if you want to delete a specified item, then at the prductId type the product Id that you want to delete             
              */
             if (!orderDetail.Exists(id)|| !orderDetail.ProductExists(id, productId))
