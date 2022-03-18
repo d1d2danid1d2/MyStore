@@ -14,8 +14,10 @@ namespace MyStore.Data
         IEnumerable<OrderDetail> GetById(int id);
         OrderDetail Add(OrderDetail orderDetailToAdd);
         bool Exists(int id);
+        bool ProductExists(int id, int? prodId);
         void Update(OrderDetail orderDetailToUpdate);
-        bool Delete(int id);
+        bool Delete(int id, int? prodId);
+
     }
     public class OrderDetailRepository : IOrderDetailRepository
     {
@@ -37,25 +39,47 @@ namespace MyStore.Data
         public OrderDetail Add(OrderDetail orderDetailToAdd)
         {
             var orderAdded = context.OrderDetails.Add(orderDetailToAdd);
+            context.SaveChanges();
             return orderAdded.Entity;
         }
         public bool Exists(int id)
         {
             var exists = context.OrderDetails.Count(x => x.Orderid == id);
-            return exists >= 1;         
+            return exists >= 1;
+        }
+        public bool ProductExists(int id, int? prodId)
+        {
+            var order = GetById(id);
+            if (prodId == null)
+            {
+                order.FirstOrDefault();
+                return true;
+            }
+             
+            var exists = order.Count(x => x.Productid == prodId);    
+            return exists == 1;
         }
         public void Update(OrderDetail orderDetailToUpdate)
         {
-            var updatedOrder = context.OrderDetails.Update(orderDetailToUpdate);
+            //var updatedOrder = context.OrderDetails.First(x => x.Productid == orderDetailToUpdate.Productid);
+            //updatedOrder = orderDetailToUpdate;
+            context.OrderDetails.Update(orderDetailToUpdate);
             context.SaveChanges();
         }
-        public bool Delete(int id)
+        public bool Delete(int id, int? productId)
         {
-            var deleteOrders = GetById(id);
-            foreach (var item in deleteOrders)
+            var deleteOrders = new OrderDetail();
+            if (productId != null)
             {
-                context.Remove(item);
+                deleteOrders = GetById(id).First(x => x.Productid == productId);
+                context.OrderDetails.Remove(deleteOrders);
             }
+            else
+            {
+                deleteOrders = GetById(id).FirstOrDefault();
+                context.OrderDetails.Remove(deleteOrders);
+            }
+
             context.SaveChanges();
             return deleteOrders != null;
         }

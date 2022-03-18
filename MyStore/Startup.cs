@@ -61,10 +61,15 @@ namespace MyStore
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped(typeof(OrdersProfile));
-            services.AddScoped<IOrdersPresentation, OrdersPresentation>();
-            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrdersPresentation, OrdersPresentation>();            
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
+            services.AddScoped<IOrderDetailPresentation, OrderDetailPresentation>();
+            services.AddScoped<IOrderDetailService, OrderDetailService>();
+            services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
+
+            
             
             services.AddScoped(typeof(EmployeeProfile));
             services.AddScoped<IEmployeesRepository, EmployeesRepository>();
