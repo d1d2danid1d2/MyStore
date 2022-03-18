@@ -61,11 +61,18 @@ namespace MyStore.Controllers
              
             And here the fun begin
 
-            You can update the val of an index in two ways : 1) you ignore the ?productId and the index will be automatically orderToAdd.ProductId
+            You can update the val of an index in two ways : 1) you ignore the ?productId and the the first index will change
                                                              2) you can put the productId of the OrderDetail that you want to change 
 
-            OrderDetailPresentation was created to create more space for the OrderDetailService 
-            The code in OrderDetailService and Repository is bad , because it's hard to read , and the logic behind it is somewhat ok
+            OrderDetailPresentation was created to make more space to see in OrderDetailService
+            The code in OrderDetailService and Repository is bad , because it's hard to read and the logic behind it is somewhat ok but it has some bugs and rn i only know how to use 
+            if/else statements to make it work, but later i will refactor this
+
+            http://localhost:5000/api/OrderDetail/11105?productId=7
+            11105(the order index)
+            ?productId=7 (the index that you want to be changed)
+
+           
             
              
              */
