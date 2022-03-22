@@ -51,30 +51,32 @@ namespace MyStore.Services
         }
         public void Update(OrderDetail orderDetailToUpdate, int? productId)
         {
-            if(repository.ProductExists(orderDetailToUpdate.Orderid,orderDetailToUpdate.Productid) && productId != orderDetailToUpdate.Productid && productId != null)
+            var newOrderId = orderDetailToUpdate.Orderid;
+            var newProductId = orderDetailToUpdate.Productid;
+            if (repository.ProductExists(newOrderId, newProductId) && productId != newProductId && productId != null)
             {
-                var firstOldOrder = repository.GetById(orderDetailToUpdate.Orderid).First(x => x.Productid == orderDetailToUpdate.Productid);
-                var oldOrder = repository.GetById(orderDetailToUpdate.Orderid).First(x => x.Productid == productId);
+                var firstOldOrder = repository.GetById(newOrderId).First(x => x.Productid == newProductId);
+                var oldOrder = repository.GetById(newOrderId).First(x => x.Productid == productId);
                 repository.Delete(oldOrder);
                 repository.Update(firstOldOrder, orderDetailToUpdate);
             }
-            else if (productId == null || orderDetailToUpdate.Productid == productId)
+            else if (productId == null || newProductId == productId)
             {
                 if(productId == null)
                 {
-                    var oldOrder = repository.GetById(orderDetailToUpdate.Orderid).FirstOrDefault();
+                    var oldOrder = repository.GetById(newOrderId).FirstOrDefault();
                     repository.Update(oldOrder, orderDetailToUpdate);
                 }
                 else
                 {
-                    var oldOrder = repository.GetById(orderDetailToUpdate.Orderid).First(x => x.Productid == orderDetailToUpdate.Productid);
+                    var oldOrder = repository.GetById(newOrderId).First(x => x.Productid == newProductId);
                     repository.Update(oldOrder, orderDetailToUpdate);
                 }
                 
             }
-            else if(repository.ProductExists(orderDetailToUpdate.Orderid, (int)productId))
+            else if(repository.ProductExists(newOrderId, (int)productId))
             {
-                var oldOrder = repository.GetById(orderDetailToUpdate.Orderid).First(x => x.Productid == productId);
+                var oldOrder = repository.GetById(newOrderId).First(x => x.Productid == productId);
                 repository.Update(oldOrder, orderDetailToUpdate);            
             }          
         }

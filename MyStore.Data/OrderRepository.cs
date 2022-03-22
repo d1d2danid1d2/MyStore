@@ -23,7 +23,7 @@ namespace MyStore.Data
         {
             this.context = context;
         }
-
+        
         public IQueryable<Order> GetAll(int? empId, int? custId, List<string>? shipCity)
         {
             var query = this.context.Orders.Include(x => x.OrderDetails).Select(x => x);

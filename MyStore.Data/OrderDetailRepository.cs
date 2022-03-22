@@ -50,14 +50,17 @@ namespace MyStore.Data
         public bool ProductExists(int id, int? prodId)
         {
             var order = GetById(id);
-            if (prodId == null)
+            if (prodId == null && order != null)
             {
-                order.FirstOrDefault();
                 return true;
             }
-             
-            var exists = order.Count(x => x.Productid == prodId);    
-            return exists == 1;
+            else if(prodId != null)
+            {
+                var exists = order.Count(x => x.Productid == prodId);    
+                return exists == 1;
+            }
+            else { return false; }
+
         }
         public void Update(OrderDetail deleteOrder, OrderDetail updateOrder)
         {

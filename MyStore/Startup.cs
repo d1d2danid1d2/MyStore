@@ -69,11 +69,15 @@ namespace MyStore
             services.AddScoped<IOrderDetailService, OrderDetailService>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 
-            
-            
+            services.AddScoped(typeof(CategoryProfile));
+            services.AddScoped<ICategoryPresentation, CategoryPresentation>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
             services.AddScoped(typeof(EmployeeProfile));
             services.AddScoped<IEmployeesRepository, EmployeesRepository>();
-            services.AddScoped<IEmployeeService, EmployeeService>();           
+            services.AddScoped<IEmployeeService, EmployeeService>();   
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
