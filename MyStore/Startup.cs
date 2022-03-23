@@ -74,6 +74,11 @@ namespace MyStore
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 
+            services.AddScoped(typeof(ProductProfile));
+            services.AddScoped<IProductPresentation, ProductsPresentation>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductsRepository, ProductsRepository>();
+
             services.AddScoped(typeof(EmployeeProfile));
             services.AddScoped<IEmployeesRepository, EmployeesRepository>();
             services.AddScoped<IEmployeeService, EmployeeService>();   

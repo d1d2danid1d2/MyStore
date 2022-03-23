@@ -13,6 +13,6 @@ namespace MyStore.Models
         public string Categoryname { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<ProductsPresentationModel> Products { get; set; }
     }
 }
