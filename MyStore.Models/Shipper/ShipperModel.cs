@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace MyStore.Models
 {
-    public class CategoryModel
+    public class ShipperModel
     {
-        public int Categoryid { get; set; }
+        public int Shipperid { get; set; }
         [Required]
-        public string Categoryname { get; set; }
+        public string Companyname { get; set; }
         [Required]
-        public string Description { get; set; }
+        public string Phone { get; set; }
     }
 }

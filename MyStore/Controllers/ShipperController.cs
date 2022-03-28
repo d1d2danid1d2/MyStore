@@ -2,7 +2,6 @@
 using MyStore.DataPresentation;
 using MyStore.Domain.Entities;
 using MyStore.Models;
-using MyStore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,56 +13,61 @@ namespace MyStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class ShipperController : ControllerBase
     {
-        private readonly IEmployeePresentation presentation;
-        public EmployeeController(IEmployeePresentation presentation)
+        private readonly IShipperPresentation presentation;
+
+        public ShipperController(IShipperPresentation presentation)
         {
             this.presentation = presentation;
         }
-
-        // GET: api/<EmployeeController>
+        // GET: api/<ShipperController>
         [HttpGet]
-        public ActionResult<IEnumerable<EmployeeModel>> GetAll()
+        public ActionResult<IEnumerable<ShipperModel>> Get()
         {
             return Ok(presentation.GetAll());
         }
 
-        // GET api/<EmployeeController>/5
+        // GET api/<ShipperController>/5
         [HttpGet("{id}")]
-        public ActionResult<EmployeeModel> GetById(int id)
+        public ActionResult<ShipperModel> GetById(int id)
         {
+            if (!presentation.Exists(id))
+            {
+                return NotFound();
+            }
             return Ok(presentation.GetById(id));
         }
-        // POST api/<EmployeeController>
+
+        // POST api/<ShipperController>
         [HttpPost]
-        public IActionResult Post([FromBody] EmployeeModel employeeToAdd)
+        public ActionResult<ShipperModel> Post([FromBody] ShipperModel toAdd)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            var addedEmployee = presentation.Add(employeeToAdd);
-            return CreatedAtAction("GetAll", addedEmployee, new { id = addedEmployee.Empid });
+            var shipperToAdd = presentation.Add(toAdd);
+            return CreatedAtAction("Get", shipperToAdd, new { id = shipperToAdd.Shipperid });
         }
 
-        // PUT api/<EmployeeController>/5
+        // PUT api/<ShipperController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] EmployeeModel employeeToUpdate)
+        public IActionResult Put(int id, [FromBody] ShipperModel toUpdate)
         {
-            if (id != employeeToUpdate.Empid)
+            if(id != toUpdate.Shipperid)
             {
                 return BadRequest();
             }
-            if (!presentation.Exists(id))
+            if(!presentation.Exists(id))
             {
                 return NotFound();
             }
-            presentation.Update(employeeToUpdate);
+            presentation.Update(toUpdate);
             return NoContent();
         }
 
-        // DELETE api/<EmployeeController>/5
+        // DELETE api/<ShipperController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

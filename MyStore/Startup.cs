@@ -79,10 +79,28 @@ namespace MyStore
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductsRepository, ProductsRepository>();
 
-            services.AddScoped(typeof(EmployeeProfile));
-            services.AddScoped<IEmployeesRepository, EmployeesRepository>();
-            services.AddScoped<IEmployeeService, EmployeeService>();   
+            services.AddScoped(typeof(ShipperProfile));
+            services.AddScoped<IShipperPresentation, ShipperPresentation>();
+            services.AddScoped<IShipperService, ShipperService>();
+            services.AddScoped<IShipperRepository, ShipperRepository>();
 
+            services.AddScoped(typeof(SupplierProfile));
+            services.AddScoped<ISupplierPresentation, SupplierPresentation>();
+            services.AddScoped<ISupplierService, SupplierService>();
+            services.AddScoped<ISupplierRepository, SupplierRepository>();
+
+            services.AddScoped(typeof(EmployeeProfile));
+            services.AddScoped<IEmployeePresentation, EmployeePresentation>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IEmployeesRepository, EmployeesRepository>();
+
+            services.AddScoped(typeof(CustomerProfile));
+            services.AddScoped<ICustomerPresentation, CustomerPresentation>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<ICustomersRepository, CustomersRepository>();
+
+            services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<IReportService, ReportService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

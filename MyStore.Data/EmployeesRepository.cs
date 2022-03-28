@@ -11,7 +11,6 @@ namespace MyStore.Data
     {
         IEnumerable<Employee> GetAll();
         Employee GetById(int id);
-        IQueryable<Employee> GetInfoById(int id);
         Employee Add(Employee employeeToAdd);
         bool Exists(int id);
         void Update(Employee employeeToUpdate);
@@ -32,10 +31,6 @@ namespace MyStore.Data
         public Employee GetById(int id)
         {
             return context.Employees.Find(id);
-        }
-        public IQueryable<Employee> GetInfoById(int id)
-        {
-            return context.Employees.Include(x => x.Orders).Select(x => x).Where(x => x.Empid == id);
         }
         public Employee Add(Employee employeeToAdd)
         {
