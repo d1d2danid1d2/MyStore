@@ -28,7 +28,7 @@ namespace MyStore.Tests
 
             var controller = new ProductsController(mockProductService.Object);
             //act
-
+            
             var response = controller.GetAll();
 
             var result = response.Result as OkObjectResult;

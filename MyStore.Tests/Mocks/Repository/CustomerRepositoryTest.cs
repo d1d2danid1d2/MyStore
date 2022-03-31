@@ -13,11 +13,11 @@ namespace MyStore.Tests.Mocks.Repository
 {
     public class CustomerRepositoryTest
     {
-        private Mock<ICustomerRepository> mockRepo;
-
+        private Mock<ICustomersRepository> mockRepo;
+        private readonly CustomersRepository _repo;
         public CustomerRepositoryTest()
         {
-            mockRepo = new Mock<ICustomerRepository>();
+            mockRepo = new Mock<ICustomersRepository>();
         }
 
         [Fact]
@@ -27,17 +27,39 @@ namespace MyStore.Tests.Mocks.Repository
             mockRepo.Setup(x => x.GetAll()).Returns(ReturnMultiple);
 
             //act 
-
             var returns = mockRepo.Object.GetAll();
 
             //assert
             Assert.Equal(2, returns.Count());
             Assert.IsType<List<Customer>>(returns);
-
         }
+        
+        [Fact]
+        public void ShouldReturn_OkOnGetById()
+        {
+            //Arrange
+            var cId = 1;
+            var newCustomer = new Customer
+            {
+                Custid = cId,
+                Companyname = CustomerConsts.Companyname,
+                Contactname = CustomerConsts.Contactname,
+                Contacttitle = CustomerConsts.Contacttitle,
+                Country = CustomerConsts.Country,
+                Address = CustomerConsts.Address,
+                City = CustomerConsts.City,
+                Fax = CustomerConsts.Fax,
+                Phone = CustomerConsts.Phone,
+                Postalcode = CustomerConsts.Postalcode,
+                Region = CustomerConsts.Region
+            };
+            mockRepo.Setup(x => x.GetById(cId)).Returns(newCustomer);
 
-
-
+            //Act
+            var cust = _repo.GetById(cId);
+            //Assert
+            Assert.Equal(newCustomer.Custid, cId);
+        }
         public List<Customer> ReturnMultiple()
         {
             return new List<Customer>()

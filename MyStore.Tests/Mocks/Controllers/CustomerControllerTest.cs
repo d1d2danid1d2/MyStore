@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using MyStore.Controllers;
+using MyStore.Domain.Entities;
 using MyStore.Models;
+using MyStore.Models.Customer;
 using MyStore.Services;
 using MyStore.Tests.Mocks.Consts;
 using System;
@@ -33,7 +35,7 @@ namespace MyStore.Tests.Mocks.Controllers
             var response = controller.GetAll();
 
             var result = response.Result as OkObjectResult;
-            var actualData = result.Value as IEnumerable<CustomerModel>;
+            var actualData = result.Value as IEnumerable<CustomerModelPresentation>;
 
             //assert
 
@@ -52,18 +54,18 @@ namespace MyStore.Tests.Mocks.Controllers
             var response = controller.GetAll();
 
             var result = response.Result as OkObjectResult;
-            var actualData = result.Value as IEnumerable<CustomerModel>;
+            var actualData = result.Value as IEnumerable<CustomerModelPresentation>;
 
             //assert
             Assert.Equal(ReturnMultiple().Count, actualData.Count());
         }
 
 
-        public List<CustomerModel> ReturnMultiple()
+        public List<Customer> ReturnMultiple()
         {
-            return new List<CustomerModel>()
+            return new List<Customer>()
             {
-                new CustomerModel{
+                new Customer{
                 Custid = CustomerConsts.Custid,
                 Companyname = CustomerConsts.Companyname,
                 Contactname = CustomerConsts.Contactname,
@@ -71,9 +73,25 @@ namespace MyStore.Tests.Mocks.Controllers
                 Country = CustomerConsts.Country,
                 Address = CustomerConsts.Address,
                 City = CustomerConsts.City,
-                Phone = CustomerConsts.Phone
+                Phone = CustomerConsts.Phone, 
+                Fax = CustomerConsts.Fax,
+                Postalcode = CustomerConsts.Postalcode,
+                Region = CustomerConsts.Region
+    },
+                new Customer{
+                Custid = CustomerConsts.Custid,
+                Companyname = CustomerConsts.Companyname,
+                Contactname = CustomerConsts.Contactname,
+                Contacttitle = CustomerConsts.Contacttitle,
+                Country = CustomerConsts.Country,
+                Address = CustomerConsts.Address,
+                City = CustomerConsts.City,
+                Phone = CustomerConsts.Phone,
+                Fax = CustomerConsts.Fax,
+                Postalcode = CustomerConsts.Postalcode,
+                Region = CustomerConsts.Region
                 },
-                new CustomerModel{
+                new Customer{
                 Custid = CustomerConsts.Custid,
                 Companyname = CustomerConsts.Companyname,
                 Contactname = CustomerConsts.Contactname,
@@ -81,17 +99,10 @@ namespace MyStore.Tests.Mocks.Controllers
                 Country = CustomerConsts.Country,
                 Address = CustomerConsts.Address,
                 City = CustomerConsts.City,
-                Phone = CustomerConsts.Phone
-                },
-                new CustomerModel{
-                Custid = CustomerConsts.Custid,
-                Companyname = CustomerConsts.Companyname,
-                Contactname = CustomerConsts.Contactname,
-                Contacttitle = CustomerConsts.Contacttitle,
-                Country = CustomerConsts.Country,
-                Address = CustomerConsts.Address,
-                City = CustomerConsts.City,
-                Phone = CustomerConsts.Phone
+                Phone = CustomerConsts.Phone,
+                Fax = CustomerConsts.Fax,
+                Postalcode = CustomerConsts.Postalcode,
+                Region = CustomerConsts.Region
                 }
             };
         }
