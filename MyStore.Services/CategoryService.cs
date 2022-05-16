@@ -1,5 +1,7 @@
-﻿using MyStore.Data;
+﻿using AutoMapper;
+using MyStore.Data;
 using MyStore.Domain.Entities;
+using MyStore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +34,7 @@ namespace MyStore.Services
         public IEnumerable<Category> GetById(int id)
         {
             return repository.GetById(id);
+           
         }
         public Category Add(Category category)
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DataPresentation;
 using MyStore.Models;
+using MyStore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,13 +30,14 @@ namespace MyStore.Controllers
 
         // GET api/<CategoryController>/5
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<CategoryProductsModel>> GetById(int id)
+        public ActionResult<CategoryProductsModel> GetById(int id)
         {
-            if(!category.Exists(id))
+            var result = category.GetById(id);
+            if(result == null)
             {
                 return NotFound();
             }
-            return Ok(category.GetById(id));
+            return Ok(result);
         }
 
         // POST api/<CategoryController>

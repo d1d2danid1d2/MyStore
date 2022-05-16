@@ -53,7 +53,7 @@ namespace MyStore.Data
 
         public void Update(Category category)
         {
-            var categoryToUpdate = context.Categories.Update(category);
+            context.Categories.Update(category);
             context.SaveChanges();
         }
         public bool Delete(Category category) 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyStore.Tests.Mocks.Consts
+namespace MyStore.Tests.Mock.Consts
 {
     public static class OrderConsts
     {

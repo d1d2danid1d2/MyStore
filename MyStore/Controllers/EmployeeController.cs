@@ -27,6 +27,7 @@ namespace MyStore.Controllers
         public ActionResult<IEnumerable<EmployeeModel>> GetAll()
         {
             return Ok(presentation.GetAll());
+            
         }
 
         // GET api/<EmployeeController>/5

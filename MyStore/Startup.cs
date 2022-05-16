@@ -70,7 +70,7 @@ namespace MyStore
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 
             services.AddScoped(typeof(CategoryProfile));
-            services.AddScoped<ICategoryPresentation, CategoryPresentation>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 
@@ -90,7 +90,7 @@ namespace MyStore
             services.AddScoped<ISupplierRepository, SupplierRepository>();
 
             services.AddScoped(typeof(EmployeeProfile));
-            services.AddScoped<IEmployeePresentation, EmployeePresentation>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IEmployeesRepository, EmployeesRepository>();
 

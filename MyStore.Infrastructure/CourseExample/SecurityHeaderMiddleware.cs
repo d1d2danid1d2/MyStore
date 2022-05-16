@@ -16,7 +16,7 @@ namespace MyStore.Infrastructure
         }
         public async Task Invoke(HttpContext httpContext)
         {
-            httpContext.Response.Headers.Add("We", "AreAswome");
+            httpContext.Response.Headers.Add("We", "Are Awesome");
             await this.next.Invoke(httpContext);
         }
     }

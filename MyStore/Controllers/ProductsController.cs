@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyStore.DataPresentation;
+using MyStore.Infrastructure.Attributes;
 using MyStore.Models;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace MyStore.Controllers
         }
         // GET: api/<ProductsController>
         [HttpGet]
+        [ResponseHeader("Awsome","web api")]
         public ActionResult<IEnumerable<ProductsPresentationModel>> Get()
         {
             return Ok(presentation.GetAll());
