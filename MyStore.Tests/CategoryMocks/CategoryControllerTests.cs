@@ -12,41 +12,121 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MyStore.Tests
+namespace MyStore.Tests.CategoryMocks
 {
     public class CategoryControllerTests
     {
-        private readonly Mock<ICategoryPresentation> mockPresentation = new Mock<ICategoryPresentation>();
-        private readonly Mock<ICategoryService> mockService = new Mock<ICategoryService>();
+        private readonly Mock<ICategoryPresentation> presentation;
         private readonly CategoryController controller;
-
         public CategoryControllerTests()
         {
-            controller = new CategoryController(mockPresentation.Object);
+            presentation = new Mock<ICategoryPresentation>();
+            controller = new CategoryController(presentation.Object);
+        }
+        [Fact]
+        public void ShouldReturn_OnGetAll()
+        {
+            //arrange
+
+            presentation.Setup(x => x.GetAll()).Returns(ReturnMultipleCategoryModels());
+
+
+            //act
+            var response = controller.Get();
+            var result = response.Result as OkObjectResult;
+            var actualData = result.Value as IEnumerable<CategoryModel>;
+
+            //assert
+            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<List<CategoryModel>>(actualData);
+        }
+        [Fact]
+        public void ShouldReturn_GetById()
+        {
+            //arrange
+            int id = 2;
+            var expectedCategory = ReturnMultipleCategoryProductsModels().Where(x => x.Categoryid == id);
+
+            //act
+            presentation.Setup(x => x.GetById(id)).Returns(expectedCategory);
+            var response = controller.GetById(id);
+
+            var result = response.Result as OkObjectResult;
+            var actualData = result.Value as IEnumerable<CategoryProductsModel>;
+
+            //assert
+            Assert.Equal(expectedCategory.FirstOrDefault().Categoryid, actualData.FirstOrDefault().Categoryid);
+            Assert.IsAssignableFrom<IEnumerable<CategoryProductsModel>>(actualData);
         }
 
         [Fact]
-        public void ShouldSomething()
+        public void ShouldReturn_OKOnAdd()
         {
-            int cat = 1;
-            var category = new List<CategoryProductsModel>() {
-            new CategoryProductsModel()
-            {
-                Categoryid = cat,
-                Categoryname = "dada",
-                Description = "dwda"
+            //arrange
+            int id = 2;
+            var expectedCategory = ReturnMultipleCategoryModels()[id];
 
-            }}.AsEnumerable();
+            //act
+            presentation.Setup(x => x.Add(ReturnMultipleCategoryModels()[id])).Returns(ReturnMultipleCategoryModels()[id]);
 
-            mockPresentation.Setup(x => x.GetById(cat)).Returns(RetunMultiple());
+            var response = controller.Post(ReturnMultipleCategoryModels()[id]) as JsonResult;
+            var actualData = response.Value as IEnumerable<CategoryModel>;
 
-            var response = controller.GetById(cat);
-            var result = response.Result as OkObjectResult;
-            var actualData = result.Value as CategoryProductsModel;
-
-            Assert.Equal(1, actualData.Categoryid);
+            //assert
+            Assert.IsType<CategoryModel>(actualData);
         }
-        public List<CategoryProductsModel> RetunMultiple()
+
+        [Fact]
+        public void ShouldBeOk_OnUpdate()
+        {
+            //arrange
+            presentation.Setup(x => x.Update(It.IsAny<CategoryModel>())).Verifiable();
+
+            //act
+            controller.Put(1,ReturnMultipleCategoryModels()[0]);
+
+            //assert
+            presentation.Verify(x => x.Update(It.IsAny<CategoryModel>()), Times.Exactly(1));
+        }
+
+        [Fact]
+        public void ShouldReturn_TrueToDelete()
+        {
+            //arrange
+            presentation.Setup(x => x.Delete(It.IsAny<int>())).Returns(true);
+
+            //act
+            var response = controller.Delete(1);
+            var data = response as OkObjectResult;
+            //assert
+            Assert.True((bool)data.Value);
+    }
+        public List<CategoryModel> ReturnMultipleCategoryModels()
+        {
+            return new List<CategoryModel>
+            {
+                new CategoryModel()
+                {
+                    Categoryid = 1,
+                    Categoryname = "dada",
+                    Description = "dwda",
+                },
+                new CategoryModel()
+                {
+                    Categoryid = 2,
+                    Categoryname = "dada",
+                    Description = "dwda"
+                },
+                new CategoryModel()
+                {
+                    Categoryid = 3,
+                    Categoryname = "dada",
+                    Description = "dwda"
+                }
+
+            };
+        }
+        public List<CategoryProductsModel> ReturnMultipleCategoryProductsModels()
         {
             return new List<CategoryProductsModel>
             {
@@ -54,7 +134,7 @@ namespace MyStore.Tests
                 {
                     Categoryid = 1,
                     Categoryname = "dada",
-                    Description = "dwda"
+                    Description = "dwda",
                 },
                 new CategoryProductsModel()
                 {
@@ -72,4 +152,5 @@ namespace MyStore.Tests
             };
         }
     }
+    
 }

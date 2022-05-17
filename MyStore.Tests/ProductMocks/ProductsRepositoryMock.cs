@@ -1,18 +1,21 @@
-﻿ using Moq;
-using MyStore.Data;
+﻿using Moq;
 using MyStore.Domain.Entities;
+using MyStore.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace MyStore.Tests.CategoryMocks
+namespace MyStore.Tests.ProductMocks
 {
-    public class CategoryRepositoryTests
+    public class ProductsRepositoryMock
     {
-        private readonly Mock<ICategoryRepository> repository;
-        public CategoryRepositoryTests()
+        private readonly Mock<IProductsRepository> repository;
+        public ProductsRepositoryMock()
         {
-            repository = new Mock<ICategoryRepository>();
+            repository = new Mock<IProductsRepository>();
         }
         [Fact]
         public void ShouldReturn_OnGetAll()
@@ -31,7 +34,7 @@ namespace MyStore.Tests.CategoryMocks
         {
             //arrange
             int id = 2;
-            var expectedCategory = ReturnMultiple().Where(x => x.Categoryid == id).AsQueryable();
+            var expectedCategory = ReturnMultiple().Where(x => x.Productid == id).AsQueryable();
 
             //act
             repository.Setup(x => x.GetById(id)).Returns(expectedCategory);
@@ -42,15 +45,15 @@ namespace MyStore.Tests.CategoryMocks
         }
 
         [Fact]
-        public void ShouldReturn_GetByIdToDelete()
+        public void ShouldReturn_FindById()
         {
             //arrange
             int id = 2;
-            var expectedCategory = ReturnMultiple().Where(x => x.Categoryid == id).FirstOrDefault();
+            var expectedCategory = ReturnMultiple().Where(x => x.Productid == id).FirstOrDefault();
 
             //act
-            repository.Setup(x => x.GetByIdToDelete(id)).Returns(expectedCategory);
-            var actualCategory = repository.Object.GetByIdToDelete(id);
+            repository.Setup(x => x.FindById(id)).Returns(expectedCategory);
+            var actualCategory = repository.Object.FindById(id);
 
             //assert
             Assert.Equal(expectedCategory, actualCategory);
@@ -63,12 +66,12 @@ namespace MyStore.Tests.CategoryMocks
             var expectedCategory = ReturnMultiple()[id];
 
             //act
-            repository.Setup(x => x.Add(It.IsAny<Category>())).Returns(ReturnMultiple()[id]);
+            repository.Setup(x => x.Add(It.IsAny<Product>())).Returns(ReturnMultiple()[id]);
             var actualValue = repository.Object.Add(ReturnMultiple()[id]);
 
             //assert
-            Assert.Equal(expectedCategory.Categoryid, actualValue.Categoryid);
-            Assert.IsType<Category>(actualValue);
+            Assert.Equal(expectedCategory.Productid, actualValue.Productid);
+            Assert.IsType<Product>(actualValue);
         }
 
         [Fact]
@@ -88,20 +91,20 @@ namespace MyStore.Tests.CategoryMocks
         public void ShouldBeOk_OnUpdate()
         {
             //arrange
-            repository.Setup(x => x.Update(It.IsAny<Category>())).Verifiable();
+            repository.Setup(x => x.Update(It.IsAny<Product>())).Verifiable();
 
             //act
             repository.Object.Update(ReturnMultiple()[0]);
 
             //assert
-            repository.Verify(x => x.Update(It.IsAny<Category>()), Times.Exactly(1));
+            repository.Verify(x => x.Update(It.IsAny<Product>()), Times.Exactly(1));
         }
 
         [Fact]
         public void ShouldReturn_TrueToDelete()
         {
             //arrange
-            repository.Setup(x => x.Delete(It.IsAny<Category>())).Returns(true);
+            repository.Setup(x => x.Delete(It.IsAny<Product>())).Returns(true);
 
             //act
             bool actualValue = repository.Object.Delete(ReturnMultiple()[0]);
@@ -109,27 +112,36 @@ namespace MyStore.Tests.CategoryMocks
             //assert
             Assert.True(actualValue);
         }
-        public List<Category> ReturnMultiple()
+        public List<Product> ReturnMultiple()
         {
-            return new List<Category>
+            return new List<Product>
             {
-                new Category()
+                new Product()
                 {
+                    Productid = 1,
+                    Productname = "TestName",
+                    Supplierid = 2,
                     Categoryid = 1,
-                    Categoryname = "dada",
-                    Description = "dwda"
+                    Unitprice = 100,
+                    Discontinued = false
                 },
-                new Category()
+                new Product()
                 {
-                    Categoryid = 2,
-                    Categoryname = "dada",
-                    Description = "dwda"
+                    Productid = 2,
+                    Productname = "TestName",
+                    Supplierid = 2,
+                    Categoryid = 1,
+                    Unitprice = 100,
+                    Discontinued = false
                 },
-                new Category()
+                new Product()
                 {
-                    Categoryid = 3,
-                    Categoryname = "dada",
-                    Description = "dwda"
+                    Productid = 3,
+                    Productname = "TestName",
+                    Supplierid = 2,
+                    Categoryid = 1,
+                    Unitprice = 100,
+                    Discontinued = false
                 }
 
             };

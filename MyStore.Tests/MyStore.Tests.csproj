@@ -29,11 +29,8 @@
     <ProjectReference Include="..\MyStore.Domain\MyStore.Domain.csproj" />
     <ProjectReference Include="..\MyStore.Infrastructure\MyStore.Infrastructure.csproj" />
     <ProjectReference Include="..\MyStore.Models\MyStore.Models.csproj" />
+    <ProjectReference Include="..\MyStore.Services\MyStore.Services.csproj" />
     <ProjectReference Include="..\MyStore\MyStore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mocks\Repository\" />
   </ItemGroup>
 
 </Project>
